@@ -1,34 +1,82 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { ArrowLeft, Eye, EyeOff } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { useState, ChangeEvent, useEffect } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from "next/link";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { AuthService } from '@/lib/auth.service';
+import { testDirectApiCall, testDirectLoginWith } from '@/lib/test-api';
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [formState, setFormState] = useState({
-    email: "",
-    password: "",
-    rememberMe: false,
-  })
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [formState, setFormState] = useState({ rememberMe: false });
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, isLoading } = useAuth();
+  const searchParams = useSearchParams();
+  const registeredSuccess = searchParams.get('registered') === 'true';
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setFormState({
-      ...formState,
-      [name]: type === "checkbox" ? checked : value,
-    })
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    
+    const loginPayload = {
+      email,
+      password,
+      rememberMe: formState.rememberMe
+    };
+    
+    console.log('Form submitted - Payload exato:', JSON.stringify(loginPayload, null, 2));
+    
+    try {
+      const response = await login(email, password);
+      console.log('Login bem-sucedido! Resposta:', response);
+      
+      // Não precisamos manipular o redirecionamento aqui, 
+      // pois o useAuth já vai redirecionar para a página principal
+    } catch (err) {
+      console.error('Erro de login:', err);
+      let errorMessage = 'Erro ao fazer login';
+      
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+    }
+  };
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>): void {
+    const { name, checked } = event.target;
+    if (name === 'rememberMe') {
+      setFormState(prev => ({ ...prev, rememberMe: checked }));
+    }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle login logic here
-    console.log("Form submitted:", formState)
-  }
+  // Funções para teste direto
+  const handleDirectTest = async () => {
+    try {
+      await testDirectApiCall();
+      alert('Teste direto concluído. Verifique o console para detalhes.');
+    } catch (error) {
+      alert('Teste direto falhou. Verifique o console para detalhes.');
+    }
+  };
+  
+  const handleTestWithCurrentCredentials = async () => {
+    try {
+      await testDirectLoginWith(email, password);
+      alert('Teste com credenciais concluído. Verifique o console para detalhes.');
+    } catch (error) {
+      alert('Teste com credenciais falhou. Verifique o console para detalhes.');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -39,12 +87,24 @@ export default function LoginPage() {
             Back to Home
           </Link>
         </div>
-
+        
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold">Welcome back</h1>
           <p className="text-gray-600 mt-2">Sign in to your ticketly account</p>
         </div>
-
+        
+        {registeredSuccess && (
+          <div className="rounded-md bg-green-50 p-3 text-sm text-green-700 mb-4">
+            Cadastro realizado com sucesso. Faça login para continuar.
+          </div>
+        )}
+        
+        {error && (
+          <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 mb-4">
+            {error}
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -52,8 +112,8 @@ export default function LoginPage() {
               id="email"
               name="email"
               type="email"
-              value={formState.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="rounded-xl border-gray-200 focus-visible:ring-gray-200"
               required
             />
@@ -71,8 +131,8 @@ export default function LoginPage() {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                value={formState.password}
-                onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="rounded-xl border-gray-200 focus-visible:ring-gray-200 pr-10"
                 required
               />
@@ -100,9 +160,31 @@ export default function LoginPage() {
             </Label>
           </div>
 
-          <Button type="submit" className="w-full rounded-full bg-black text-white hover:bg-gray-800">
-            Sign in
+          <Button 
+            type="submit" 
+            className="w-full rounded-full bg-black text-white hover:bg-gray-800" 
+            disabled={isLoading}
+          >
+            {isLoading ? 'Entrando...' : 'Entrar'}
           </Button>
+
+          {/* Botões de teste - remova em produção */}
+          <div className="flex gap-2 mt-2">
+            <Button 
+              type="button" 
+              onClick={handleDirectTest}
+              className="flex-1 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300"
+            >
+              Testar API
+            </Button>
+            <Button 
+              type="button"
+              onClick={handleTestWithCurrentCredentials}
+              className="flex-1 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300"
+            >
+              Testar com Credenciais
+            </Button>
+          </div>
         </form>
 
         <div className="mt-6 flex items-center gap-2">
@@ -137,6 +219,7 @@ export default function LoginPage() {
             </svg>
             Continue with Google
           </Button>
+          
           <Button
             variant="outline"
             className="w-full rounded-full border-gray-200 hover:bg-gray-50 hover:text-gray-900"
@@ -153,6 +236,7 @@ export default function LoginPage() {
             </svg>
             Continue with Facebook
           </Button>
+          
           <Button
             variant="outline"
             className="w-full rounded-full border-gray-200 hover:bg-gray-50 hover:text-gray-900"
@@ -166,7 +250,7 @@ export default function LoginPage() {
             Continue with Apple
           </Button>
         </div>
-
+        
         <p className="text-center text-sm text-gray-600 mt-8">
           Don't have an account?{" "}
           <Link href="/auth/register" className="text-blue-600 hover:underline">
@@ -174,7 +258,7 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
-
+      
       <footer className="border-t border-gray-100 py-6 bg-white">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between items-center">
@@ -190,6 +274,5 @@ export default function LoginPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
-

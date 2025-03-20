@@ -26,7 +26,13 @@ const eventData = {
   ],
 }
 
-export default function CheckoutPage({ params }) {
+interface CheckoutPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function CheckoutPage({ params }: CheckoutPageProps) {
   const { id } = params
   const [selectedTicket, setSelectedTicket] = useState(eventData.ticketTypes[0].id)
   const [quantity, setQuantity] = useState(2)
@@ -34,12 +40,14 @@ export default function CheckoutPage({ params }) {
 
   const selectedTicketType = eventData.ticketTypes.find((ticket) => ticket.id === selectedTicket)
 
-  const subtotal = selectedTicketType.price * quantity
+  const subtotal = selectedTicketType ? selectedTicketType.price * quantity : 0
   const serviceFee = 15.0
   const facilityFee = 5.0
   const total = subtotal + serviceFee + facilityFee
 
-  const handleSubmit = (e) => {
+  interface FormEvent extends React.FormEvent<HTMLFormElement> {}
+
+  const handleSubmit = (e: FormEvent): void => {
     e.preventDefault()
     // Handle checkout submission
     console.log("Checkout submitted")
@@ -366,8 +374,8 @@ export default function CheckoutPage({ params }) {
 
                 <div className="py-4 border-b border-gray-100">
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600">{selectedTicketType.name}</span>
-                    <span>${selectedTicketType.price.toFixed(2)}</span>
+                    <span className="text-gray-600">{selectedTicketType ? selectedTicketType.name : "N/A"}</span>
+                    <span>${selectedTicketType ? selectedTicketType.price.toFixed(2) : "N/A"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Quantity</span>

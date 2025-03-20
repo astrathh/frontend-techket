@@ -1,44 +1,16 @@
-import Link from "next/link"
-import { ArrowLeft, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import EventCard from "@/components/event-card"
+import Link from "next/link";
+import { Search, Filter, ArrowLeft, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import EventCard from "@/components/event-card";
+import Header from "@/components/layout/header"; // Importar o componente Header
 
 export default function EventsPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
-        <div className="container flex h-16 items-center justify-between">
-          <Link href="/" className="text-xl font-semibold tracking-tight">
-            ticketly
-          </Link>
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/events" className="text-sm font-medium text-blue-600">
-              Events
-            </Link>
-            <Link href="/venues" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              Venues
-            </Link>
-            <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              About
-            </Link>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <Link href="/auth/login">
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button size="sm" className="rounded-full bg-black text-white hover:bg-gray-800">
-                Sign Up
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Utilizar o mesmo Header da página principal */}
+      <Header />
 
       {/* Main Content */}
       <main className="container py-8">

@@ -1,36 +1,86 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { ArrowLeft, Eye, EyeOff } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { useState, FormEvent } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { AuthService } from "@/lib/auth.service";
 
 export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [formState, setFormState] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    agreeToTerms: false,
-  })
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setFormState({
-      ...formState,
-      [name]: type === "checkbox" ? checked : value,
-    })
-  }
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle registration logic here
-    console.log("Form submitted:", formState)
-  }
+    // Validações
+    if (!firstName.trim()) {
+      setError("Nome é obrigatório");
+      return;
+    }
+
+    if (!lastName.trim()) {
+      setError("Sobrenome é obrigatório");
+      return;
+    }
+
+    if (!email.trim()) {
+      setError("Email é obrigatório");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("A senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem");
+      return;
+    }
+
+    if (!agreeToTerms) {
+      setError("Você deve concordar com os termos de uso para se registrar");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      
+      // Log do payload para debug
+      const payload = {
+        email,
+        password,
+        firstName,
+        lastName,
+        agreeToTerms
+      };
+      console.log('Enviando dados de registro:', payload);
+      
+      await AuthService.register(email, password, firstName, lastName, agreeToTerms);
+      console.log("Registro bem-sucedido, redirecionando para login");
+      router.push("/auth/login?registered=true");
+    } catch (error: any) {
+      console.error("Erro no registro:", error);
+      setError(error.message || "Ocorreu um erro ao registrar. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -43,30 +93,38 @@ export default function RegisterPage() {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold">Create your account</h1>
-          <p className="text-gray-600 mt-2">Join ticketly to discover and book tickets for events</p>
+          <h1 className="text-2xl font-bold">Create an account</h1>
+          <p className="text-gray-600 mt-2">Sign up for your ticketly account</p>
         </div>
+
+        {error && (
+          <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 mb-4">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First name</Label>
+              <Label htmlFor="firstName">First Name</Label>
               <Input
                 id="firstName"
                 name="firstName"
-                value={formState.firstName}
-                onChange={handleChange}
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 className="rounded-xl border-gray-200 focus-visible:ring-gray-200"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last name</Label>
+              <Label htmlFor="lastName">Last Name</Label>
               <Input
                 id="lastName"
                 name="lastName"
-                value={formState.lastName}
-                onChange={handleChange}
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 className="rounded-xl border-gray-200 focus-visible:ring-gray-200"
                 required
               />
@@ -79,8 +137,8 @@ export default function RegisterPage() {
               id="email"
               name="email"
               type="email"
-              value={formState.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="rounded-xl border-gray-200 focus-visible:ring-gray-200"
               required
             />
@@ -93,8 +151,8 @@ export default function RegisterPage() {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                value={formState.password}
-                onChange={handleChange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="rounded-xl border-gray-200 focus-visible:ring-gray-200 pr-10"
                 required
               />
@@ -106,21 +164,40 @@ export default function RegisterPage() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Password must be at least 8 characters long</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="rounded-xl border-gray-200 focus-visible:ring-gray-200 pr-10"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
 
           <div className="flex items-start gap-2">
-            <div className="flex items-center h-5 mt-0.5">
-              <input
-                id="agreeToTerms"
-                name="agreeToTerms"
-                type="checkbox"
-                checked={formState.agreeToTerms}
-                onChange={handleChange}
-                className="h-4 w-4 rounded border-gray-300 text-black focus:ring-gray-200"
-                required
-              />
-            </div>
+            <input
+              id="agreeToTerms"
+              name="agreeToTerms"
+              type="checkbox"
+              checked={agreeToTerms}
+              onChange={(e) => setAgreeToTerms(e.target.checked)}
+              className="h-4 w-4 mt-1 rounded border-gray-300 text-black focus:ring-gray-200"
+              required
+            />
             <Label htmlFor="agreeToTerms" className="text-sm font-normal">
               I agree to the{" "}
               <Link href="/terms" className="text-blue-600 hover:underline">
@@ -133,8 +210,12 @@ export default function RegisterPage() {
             </Label>
           </div>
 
-          <Button type="submit" className="w-full rounded-full bg-black text-white hover:bg-gray-800">
-            Create account
+          <Button
+            type="submit"
+            className="w-full rounded-full bg-black text-white hover:bg-gray-800"
+            disabled={isLoading}
+          >
+            {isLoading ? "Cadastrando..." : "Cadastrar"}
           </Button>
         </form>
 
@@ -170,6 +251,7 @@ export default function RegisterPage() {
             </svg>
             Continue with Google
           </Button>
+          
           <Button
             variant="outline"
             className="w-full rounded-full border-gray-200 hover:bg-gray-50 hover:text-gray-900"
@@ -185,18 +267,6 @@ export default function RegisterPage() {
               />
             </svg>
             Continue with Facebook
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full rounded-full border-gray-200 hover:bg-gray-50 hover:text-gray-900"
-          >
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-              <path
-                d="M13.066 7.292c1.754 0 2.92.82 3.592 1.508.683.63 1.186 1.513 1.375 2.438h-2.875c-.187-.488-.683-1.313-2.092-1.313-1.587 0-2.913 1.313-2.913 3.25 0 1.938 1.326 3.25 2.913 3.25 1.409 0 1.905-.825 2.092-1.313h2.875c-.189.925-.692 1.808-1.375 2.438-.672.688-1.838 1.508-3.592 1.508-2.996 0-5.792-2.313-5.792-5.883s2.796-5.883 5.792-5.883z"
-                fill="currentColor"
-              />
-            </svg>
-            Continue with Apple
           </Button>
         </div>
 
@@ -223,6 +293,5 @@ export default function RegisterPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
-
