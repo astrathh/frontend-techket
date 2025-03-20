@@ -1,46 +1,63 @@
-import { Calendar, MapPin, Clock } from "lucide-react"
+import Link from "next/link"
+import { Calendar, MapPin, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 export default function FeaturedEvent() {
+  // Dados do evento Tomorrowland Brasil
+  const event = {
+    id: 2,  // ID do evento para correspondência com event-card.tsx
+    title: "Tomorrowland Brasil 2025",
+    description: "O maior festival de música eletrônica do mundo chega ao Brasil com uma experiência mágica e imersiva. Apresentando os melhores DJs internacionais em 5 palcos diferentes com produção de última geração em um ambiente mágico e inesquecível.",
+    date: "Maio 15, 2025",
+    location: "São Paulo, Brasil",
+    price: "450.00",
+    // URL de imagem atualizada que funciona
+    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&auto=format"
+  }
+
   return (
-    <div className="overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm">
-      <div className="grid md:grid-cols-2">
-        <div className="relative h-64 md:h-auto overflow-hidden">
-          <img
-            src="/placeholder.svg?height=600&width=800"
-            alt="Featured event"
-            className="object-cover w-full h-full"
-          />
-          <Badge className="absolute top-4 left-4 bg-blue-600 hover:bg-blue-700">Featured</Badge>
-        </div>
-        <div className="p-6 md:p-8 flex flex-col">
-          <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+    <div className="grid gap-8 lg:grid-cols-2 rounded-2xl overflow-hidden border border-gray-100 bg-white">
+      <div className="relative h-[300px] lg:h-auto overflow-hidden">
+        <img
+          src={event.image}
+          alt={event.title}
+          className="object-cover w-full h-full"
+        />
+        <Badge className="absolute top-4 left-4 bg-blue-600 hover:bg-blue-700">
+          Evento Patrocinado
+        </Badge>
+      </div>
+      <div className="p-6 lg:p-8 flex flex-col">
+        <div className="flex-1">
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              <span>April 22, 2025</span>
+              <span>{event.date}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              <span>8:00 PM</span>
+              <MapPin className="h-4 w-4" />
+              <span>{event.location}</span>
             </div>
           </div>
-          <h2 className="text-2xl font-bold mb-2">World Tour 2025: Live in Concert</h2>
-          <div className="flex items-center gap-1 mb-4">
-            <MapPin className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">Madison Square Garden, New York</span>
-          </div>
-          <p className="text-gray-600 mb-6 flex-grow">
-            Don't miss the most anticipated concert of the year! Join us for an unforgettable night of music and
-            entertainment featuring chart-topping hits and spectacular performances.
+          <h3 className="text-2xl font-bold mb-4">{event.title}</h3>
+          <p className="text-gray-600 mb-6">
+            {event.description}
           </p>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <p className="text-sm text-gray-500">Tickets starting at</p>
-              <p className="text-2xl font-bold">$89.99</p>
-            </div>
-            <Button className="rounded-full bg-black text-white hover:bg-gray-800 px-6">Get Tickets</Button>
-          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Button
+            asChild
+            className="flex-1 rounded-full bg-black text-white hover:bg-gray-800"
+          >
+            <Link href={`/events/${event.id}`}>Comprar ingressos</Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            className="w-full sm:w-auto px-8 rounded-full bg-black text-white hover:bg-gray-800"
+          >
+          </Button>
         </div>
       </div>
     </div>

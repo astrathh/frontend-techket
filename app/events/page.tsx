@@ -17,11 +17,11 @@ export default function EventsPage() {
         <div className="flex items-center gap-2 mb-6">
           <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1">
             <ArrowLeft className="h-4 w-4" />
-            Back to Home
+            Voltar para a página inicial
           </Link>
         </div>
 
-        <h1 className="text-3xl font-bold mb-8">All Events</h1>
+        <h1 className="text-3xl font-bold mb-8">Todos os eventos</h1>
 
         {/* Filters */}
         <div className="grid gap-4 md:grid-cols-4 mb-8">
@@ -37,11 +37,11 @@ export default function EventsPage() {
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="music">Music</SelectItem>
+              <SelectItem value="all">Categorias</SelectItem>
+              <SelectItem value="music">Música</SelectItem>
               <SelectItem value="sports">Sports</SelectItem>
-              <SelectItem value="theater">Theater</SelectItem>
-              <SelectItem value="comedy">Comedy</SelectItem>
+              <SelectItem value="theater">Teatro</SelectItem>
+              <SelectItem value="comedy">Comédia</SelectItem>
             </SelectContent>
           </Select>
           <Select>
@@ -49,11 +49,11 @@ export default function EventsPage() {
               <SelectValue placeholder="Date" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Any Date</SelectItem>
-              <SelectItem value="today">Today</SelectItem>
-              <SelectItem value="tomorrow">Tomorrow</SelectItem>
-              <SelectItem value="weekend">This Weekend</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
+              <SelectItem value="all">Datas</SelectItem>
+              <SelectItem value="today">Hoje</SelectItem>
+              <SelectItem value="tomorrow">Amanhã</SelectItem>
+              <SelectItem value="weekend">Neste final de semana</SelectItem>
+              <SelectItem value="month">Neste mês</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -69,7 +69,7 @@ export default function EventsPage() {
         <div className="flex justify-center">
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="rounded-full">
-              Previous
+              Anterior
             </Button>
             {[1, 2, 3, 4, 5].map((page) => (
               <Button
@@ -82,7 +82,7 @@ export default function EventsPage() {
               </Button>
             ))}
             <Button variant="outline" size="sm" className="rounded-full">
-              Next
+              Próximo
             </Button>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function EventsPage() {
       <footer className="border-t border-gray-100 py-8 bg-white">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600">© {new Date().getFullYear()} ticketly. All rights reserved.</p>
+            <p className="text-sm text-gray-600">© {new Date().getFullYear()} Techket. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               {["Twitter", "Facebook", "Instagram", "LinkedIn"].map((social) => (
                 <Link key={social} href="#" className="text-sm text-gray-600 hover:text-gray-900">

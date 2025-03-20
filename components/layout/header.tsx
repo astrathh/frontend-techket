@@ -1,16 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ShoppingCart, User, Menu } from "lucide-react";
+import { ShoppingCart, User, Menu, LogOut, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { isAuthenticated, logout } = useAuth();
+  const router = useRouter();
   const [userName, setUserName] = useState("");
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Fechar dropdown quando clicar fora dele
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent): void => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -20,6 +37,12 @@ export default function Header() {
       setUserName(firstName || "Usuário");
     }
   }, [isAuthenticated]); // Adicionar isAuthenticated como dependência para atualizar quando o status mudar
+
+  const handleLogout = () => {
+    logout();
+    setUserDropdownOpen(false);
+    router.push('/');
+  };
 
   // Evitar problemas de hidratação
   if (!mounted) {
@@ -47,13 +70,13 @@ export default function Header() {
         
         <nav className="hidden md:flex items-center space-x-8">
           <Link href="/events" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-            Events
+            Eventos
           </Link>
-          <Link href="/venues" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-            Venues
+          <Link href="" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            Locais
           </Link>
-          <Link href="/about" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-            About
+          <Link href="" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            Sobre
           </Link>
         </nav>
         
@@ -65,9 +88,38 @@ export default function Header() {
                   <ShoppingCart className="h-5 w-5" />
                 </Button>
               </Link>
-              <div className="flex items-center">
-                <User className="h-5 w-5 text-gray-600 mr-2" />
-                <span className="text-sm font-medium">Olá, {userName}</span>
+              
+              {/* User dropdown */}
+              <div className="relative" ref={dropdownRef}>
+                <div 
+                  className="flex items-center cursor-pointer p-1 rounded-full hover:bg-gray-100"
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                >
+                  <User className="h-5 w-5 text-gray-600 mr-2" />
+                  <span className="text-sm font-medium">Olá, {userName}</span>
+                </div>
+                
+                {/* Dropdown menu */}
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-100">
+                    <Link 
+                      href="/purchase" 
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      <Ticket className="h-4 w-4 mr-3 text-gray-500" />
+                      Meus Ingressos
+                    </Link>
+                    <div className="border-t border-gray-100 my-1"></div>
+                    <button 
+                      onClick={handleLogout}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
+                    >
+                      <LogOut className="h-4 w-4 mr-3 text-gray-500" />
+                      Sair
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           ) : (
@@ -124,6 +176,28 @@ export default function Header() {
             >
               About
             </Link>
+            
+            {isAuthenticated && (
+              <>
+                <div className="border-t border-gray-100 pt-4 mt-4">
+                  <Link 
+                    href="/purchase" 
+                    className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 mb-3"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Ticket className="h-4 w-4 mr-2" />
+                    Meus Ingressos
+                  </Link>
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center text-sm font-medium text-gray-800 hover:text-gray-900"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sair
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
