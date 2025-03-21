@@ -88,13 +88,13 @@ export default function RegisterPage() {
         <div className="mb-8">
           <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1">
             <ArrowLeft className="h-4 w-4" />
-            Back to Home
+            Voltar para página inicial
           </Link>
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold">Create an account</h1>
-          <p className="text-gray-600 mt-2">Sign up for your ticketly account</p>
+          <h1 className="text-2xl font-bold">Crie sua conta</h1>
+          <p className="text-gray-600 mt-2">Logue com a sua conta Techket</p>
         </div>
 
         {error && (
@@ -106,7 +106,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">Primeiro Nome</Label>
               <Input
                 id="firstName"
                 name="firstName"
@@ -118,7 +118,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="lastName">Último Nome</Label>
               <Input
                 id="lastName"
                 name="lastName"
@@ -145,7 +145,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Senha</Label>
             <div className="relative">
               <Input
                 id="password"
@@ -167,7 +167,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label htmlFor="confirmPassword">Confirme sua senha</Label>
             <div className="relative">
               <Input
                 id="confirmPassword"
@@ -199,13 +199,13 @@ export default function RegisterPage() {
               required
             />
             <Label htmlFor="agreeToTerms" className="text-sm font-normal">
-              I agree to the{" "}
+              Eu concordo com{" "}
               <Link href="/terms" className="text-blue-600 hover:underline">
-                Terms of Service
+                Termos de Serviço
               </Link>{" "}
-              and{" "}
+              e{" "}
               <Link href="/privacy" className="text-blue-600 hover:underline">
-                Privacy Policy
+                Política de Privacidade
               </Link>
             </Label>
           </div>
@@ -221,7 +221,7 @@ export default function RegisterPage() {
 
         <div className="mt-6 flex items-center gap-2">
           <Separator className="flex-1" />
-          <span className="text-xs text-gray-500">OR</span>
+          <span className="text-xs text-gray-500">OU</span>
           <Separator className="flex-1" />
         </div>
 
@@ -249,7 +249,7 @@ export default function RegisterPage() {
               />
               <path d="M1 1h22v22H1z" fill="none" />
             </svg>
-            Continue with Google
+            Continuar com Google
           </Button>
           
           <Button
@@ -266,14 +266,14 @@ export default function RegisterPage() {
                 fill="white"
               />
             </svg>
-            Continue with Facebook
+            Continuar com Facebook
           </Button>
         </div>
 
         <p className="text-center text-sm text-gray-600 mt-8">
-          Already have an account?{" "}
+          Já possui uma conta?{" "}
           <Link href="/auth/login" className="text-blue-600 hover:underline">
-            Sign in
+            Entrar
           </Link>
         </p>
       </div>
@@ -281,9 +281,9 @@ export default function RegisterPage() {
       <footer className="border-t border-gray-100 py-6 bg-white">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600">© {new Date().getFullYear()} ticketly. All rights reserved.</p>
+            <p className="text-sm text-gray-600">© {new Date().getFullYear()} Techket. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              {["Terms", "Privacy", "Help"].map((link) => (
+              {["Termos", "Privacidade", "Ajuda"].map((link) => (
                 <Link key={link} href="#" className="text-sm text-gray-600 hover:text-gray-900">
                   {link}
                 </Link>

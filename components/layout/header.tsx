@@ -126,12 +126,12 @@ export default function Header() {
             <>
               <Link href="/auth/login">
                 <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
-                  Sign In
+                  Entrar
                 </Button>
               </Link>
               <Link href="/auth/register">
                 <Button size="sm" className="rounded-full bg-black text-white hover:bg-gray-800">
-                  Sign Up
+                  Criar Conta
                 </Button>
               </Link>
             </>
@@ -160,21 +160,21 @@ export default function Header() {
               className="block text-sm font-medium text-gray-600 hover:text-gray-900"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Events
+              Eventos
             </Link>
             <Link 
               href="/venues" 
               className="block text-sm font-medium text-gray-600 hover:text-gray-900"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Venues
+              Locais
             </Link>
             <Link 
               href="/about" 
               className="block text-sm font-medium text-gray-600 hover:text-gray-900"
               onClick={() => setMobileMenuOpen(false)}
             >
-              About
+              Sobre
             </Link>
             
             {isAuthenticated && (

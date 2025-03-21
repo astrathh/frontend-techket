@@ -9,8 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { AuthService } from '@/lib/auth.service';
-import { testDirectApiCall, testDirectLoginWith } from '@/lib/test-api';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -26,20 +24,10 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     
-    const loginPayload = {
-      email,
-      password,
-      rememberMe: formState.rememberMe
-    };
-    
-    console.log('Form submitted - Payload exato:', JSON.stringify(loginPayload, null, 2));
-    
     try {
       const response = await login(email, password);
       console.log('Login bem-sucedido! Resposta:', response);
       
-      // Não precisamos manipular o redirecionamento aqui, 
-      // pois o useAuth já vai redirecionar para a página principal
     } catch (err) {
       console.error('Erro de login:', err);
       let errorMessage = 'Erro ao fazer login';
@@ -59,38 +47,19 @@ export default function LoginPage() {
     }
   }
 
-  // Funções para teste direto
-  const handleDirectTest = async () => {
-    try {
-      await testDirectApiCall();
-      alert('Teste direto concluído. Verifique o console para detalhes.');
-    } catch (error) {
-      alert('Teste direto falhou. Verifique o console para detalhes.');
-    }
-  };
-  
-  const handleTestWithCurrentCredentials = async () => {
-    try {
-      await testDirectLoginWith(email, password);
-      alert('Teste com credenciais concluído. Verifique o console para detalhes.');
-    } catch (error) {
-      alert('Teste com credenciais falhou. Verifique o console para detalhes.');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <div className="container max-w-md mx-auto px-4 py-8 flex-1 flex flex-col">
         <div className="mb-8">
           <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1">
             <ArrowLeft className="h-4 w-4" />
-            Back to Home
+            Voltar para página inicial
           </Link>
         </div>
         
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold">Welcome back</h1>
-          <p className="text-gray-600 mt-2">Sign in to your ticketly account</p>
+          <h1 className="text-2xl font-bold">Bem vindo!</h1>
+          <p className="text-gray-600 mt-2">Faça login com a sua conta Techket</p>
         </div>
         
         {registeredSuccess && (
@@ -121,9 +90,9 @@ export default function LoginPage() {
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Senha</Label>
               <Link href="/auth/forgot-password" className="text-xs text-blue-600 hover:underline">
-                Forgot password?
+                Esqueceu sua senha?
               </Link>
             </div>
             <div className="relative">
@@ -156,7 +125,7 @@ export default function LoginPage() {
               className="h-4 w-4 rounded border-gray-300 text-black focus:ring-gray-200"
             />
             <Label htmlFor="rememberMe" className="text-sm font-normal">
-              Remember me
+              Lembrar de mim
             </Label>
           </div>
 
@@ -167,29 +136,11 @@ export default function LoginPage() {
           >
             {isLoading ? 'Entrando...' : 'Entrar'}
           </Button>
-
-          {/* Botões de teste - remova em produção */}
-          <div className="flex gap-2 mt-2">
-            <Button 
-              type="button" 
-              onClick={handleDirectTest}
-              className="flex-1 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300"
-            >
-              Testar API
-            </Button>
-            <Button 
-              type="button"
-              onClick={handleTestWithCurrentCredentials}
-              className="flex-1 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300"
-            >
-              Testar com Credenciais
-            </Button>
-          </div>
         </form>
 
         <div className="mt-6 flex items-center gap-2">
           <Separator className="flex-1" />
-          <span className="text-xs text-gray-500">OR</span>
+          <span className="text-xs text-gray-500">OU</span>
           <Separator className="flex-1" />
         </div>
 
@@ -217,7 +168,7 @@ export default function LoginPage() {
               />
               <path d="M1 1h22v22H1z" fill="none" />
             </svg>
-            Continue with Google
+            Continuar com Google
           </Button>
           
           <Button
@@ -234,27 +185,15 @@ export default function LoginPage() {
                 fill="white"
               />
             </svg>
-            Continue with Facebook
+            Continuar com Facebook
           </Button>
           
-          <Button
-            variant="outline"
-            className="w-full rounded-full border-gray-200 hover:bg-gray-50 hover:text-gray-900"
-          >
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-              <path
-                d="M13.066 7.292c1.754 0 2.92.82 3.592 1.508.683.63 1.186 1.513 1.375 2.438h-2.875c-.187-.488-.683-1.313-2.092-1.313-1.587 0-2.913 1.313-2.913 3.25 0 1.938 1.326 3.25 2.913 3.25 1.409 0 1.905-.825 2.092-1.313h2.875c-.189.925-.692 1.808-1.375 2.438-.672.688-1.838 1.508-3.592 1.508-2.996 0-5.792-2.313-5.792-5.883s2.796-5.883 5.792-5.883z"
-                fill="currentColor"
-              />
-            </svg>
-            Continue with Apple
-          </Button>
         </div>
         
         <p className="text-center text-sm text-gray-600 mt-8">
-          Don't have an account?{" "}
+          Não possui conta ainda?{" "}
           <Link href="/auth/register" className="text-blue-600 hover:underline">
-            Sign up
+            Cadastre-se
           </Link>
         </p>
       </div>
@@ -262,9 +201,9 @@ export default function LoginPage() {
       <footer className="border-t border-gray-100 py-6 bg-white">
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600">© {new Date().getFullYear()} ticketly. All rights reserved.</p>
+            <p className="text-sm text-gray-600">© {new Date().getFullYear()} Techket. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              {["Terms", "Privacy", "Help"].map((link) => (
+              {["Termos", "Privacidade", "Ajuda"].map((link) => (
                 <Link key={link} href="#" className="text-sm text-gray-600 hover:text-gray-900">
                   {link}
                 </Link>

@@ -35,8 +35,8 @@ export default function Home() {
           </div>
           <div className="relative h-[400px] rounded-2xl overflow-hidden">
             <img
-              src="/placeholder.svg?height=800&width=600"
-              alt="Concert crowd"
+              src="https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80://images.unsplash.com/photo-1600373669762-150bec907fe8?q=80&w=1974&auto=format&fit=crop"
+              alt="Festival de carros coloridos"
               className="object-cover w-full h-full"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
