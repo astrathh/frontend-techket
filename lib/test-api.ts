@@ -10,7 +10,7 @@ export async function testDirectApiCall() {
       };
   
       // Fazer a requisição para o endpoint de login
-      const response = await fetch('http://localhost:3000/auth/login', {
+      const response = await fetch('${API_URL}/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export async function testDirectApiCall() {
     
     try {
       // Fazer a requisição para o endpoint de login
-      const response = await fetch('http://localhost:3000/auth/login', {
+      const response = await fetch('${API_URL}/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

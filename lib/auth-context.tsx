@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthService } from './auth.service';
 import { useRouter } from 'next/navigation';
+import { API_URL } from '../app/api/api';
 import "../app/globals.css"
 
 type User = {
@@ -50,7 +51,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     if (isAuth && !user) {
       // Se temos um token mas não temos dados do usuário, usamos dados temporários
-      // Idealmente, você faria uma chamada à API para obter os dados reais do usuário
       setUser({ id: 'temp-id', email: 'user@example.com' });
     } else if (!isAuth && user) {
       // Se não temos token mas temos dados de usuário, limpamos os dados
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       
       // Chamada direta ao endpoint usando fetch
-      const response = await fetch('http://localhost:3000/auth/login', {
+      const response = await fetch('${API_URL}/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
